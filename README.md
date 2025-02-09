@@ -86,6 +86,10 @@ Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 
 CUSTOM NOTE:
 
+--in pjsip.conf, the aor and extension name/context should be same.
+--enable in ari.conf to true, and also enable in http.conf to allow ari to work.
+--modules show like ari. use this command to check if ari module is loaded or not. else load them by module load module name.
+--if you are using in docker like below, make sure to map required ports like 5060,8088 etc (see the docker compose file)
 asterisk: image: andrius/asterisk:latest
 
 volumes:
