@@ -83,3 +83,43 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+CUSTOM NOTE:
+
+asterisk: image: andrius/asterisk:latest
+
+volumes:
+
+- ./asterisk_config:/etc/asterisk # Persistent configuration files
+- ./asterisk_data:/var/lib/asterisk
+
+docker cp asterisk:/etc/asterisk ./asterisk_config
+docker cp asterisk:/var/lib/asterisk ./asterisk_data
+
+docker cp /sounds/ asterisk:/var/lib/asterisk/
+
+Hostname EWS2K19-JMP
+IP 122.186.47.3
+User ID gulfam
+Password Ex@t0@123
+
+[gulfam@ewscentosR9 ~]$ sudo iptables -A INPUT -p udp --dport 5060 -s 223.190.81.19 -j ACCEPT
+[gulfam@ewscentosR9 ~]$ sudo iptables -A INPUT -p udp --dport 5060 -j DROP
+[gulfam@ewscentosR9 ~]$ sudo ip6tables -A INPUT -p udp --dport 5060 -s 2401:4900:1c66:2a0:3525:d8f4:69f2:a0ea -j ACCEPT
+[gulfam@ewscentosR9 ~]$ sudo ip6tables -A INPUT -p udp --dport 5060 -j DROP
+
+module show like ari
+module load res_ari.so
+
+module load res_ari_applications.so  
+module load res_ari_asterisk.so  
+module load res_ari_bridges.so  
+module load res_ari_channels.so  
+module load res_ari_device_states.so  
+module load res_ari_endpoints.so  
+module load res_ari_events.so  
+module load res_ari_playbacks.so
+module load res_ari_recordings.so  
+module load res_ari_sounds.so
+
+/var/lib/asterisk/sounds # chmod 755 thanks-call-later.wav
