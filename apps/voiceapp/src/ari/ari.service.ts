@@ -1,6 +1,15 @@
-import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  OnModuleInit,
+  Logger,
+  forwardRef,
+  Inject,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as AriClient from 'ari-client';
+import { CallFlowEngineService, FlowStep } from './call-flow-engine.service';
+import { promises as fs } from 'fs';
+import * as path from 'path';
 
 @Injectable()
 export class AriService implements OnModuleInit {
@@ -13,7 +22,11 @@ export class AriService implements OnModuleInit {
   private readonly appName: string;
   private readonly outboundEndpoint: string;
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    private readonly configService: ConfigService,
+    @Inject(forwardRef(() => CallFlowEngineService))
+    private readonly callFlowEngineService: CallFlowEngineService,
+  ) {
     const ariConfig = this.configService.get('ari');
     console.log('ariConfig', ariConfig);
     this.ariUrl = ariConfig.url;
@@ -21,6 +34,24 @@ export class AriService implements OnModuleInit {
     this.ariPassword = ariConfig.password;
     this.appName = ariConfig.appName;
     this.outboundEndpoint = ariConfig.outboundEndpoint;
+  }
+
+  async getSavedFlowSteps(): Promise<FlowStep[]> {
+    try {
+      // Adjust the path to your flow file
+      const filePath = path.join(process.cwd(), 'flows', 'flow.json');
+      const data = await fs.readFile(filePath, 'utf8');
+      const savedFlow = JSON.parse(data);
+      // Check if the saved flow uses a "steps" property (if you transformed it in the API route)
+      if (savedFlow.steps) {
+        return savedFlow.steps;
+      }
+      // Otherwise, if you saved the complete nodes array, extract the `data` property from each node.
+      return savedFlow.nodes.map((node: any) => node.data);
+    } catch (error) {
+      this.logger.error('Error reading saved flow:', error);
+      throw error;
+    }
   }
 
   async onModuleInit() {
@@ -35,18 +66,17 @@ export class AriService implements OnModuleInit {
       this.client.start(this.appName);
 
       // Listen for channels entering the application
-      this.client.on('StasisStart', (event, channel) => {
-        this.logger.log(`Channel ${channel.id} entered ${this.appName}`);
-        // For demonstration, automatically answer and play a greeting.
-        channel
-          .answer()
-          .then(() => {
-            this.logger.log(`Channel ${channel.id} answered`);
-            return channel.play({ media: 'sound:thanks-call-later' });
-          })
-          .catch((err) =>
-            this.logger.error(`Error handling channel ${channel.id}:`, err),
-          );
+
+      // Inside your ARI service’s StasisStart event handler:
+      this.client.on('StasisStart', async (event, channel) => {
+        this.logger.log(`Channel ${channel.id} entered the application`);
+
+        // Retrieve the flow definition from the database.
+        // For this example, we use a hard-coded flow.
+        const savedFlow = await this.getSavedFlowSteps();
+        // Execute the flow steps from the saved flow.
+        await this.callFlowEngineService.executeFlowSteps(channel, savedFlow);
+        // Optionally, set up additional channel event listeners (e.g., for creating CDRs on hangup).
       });
     } catch (err) {
       this.logger.error('Error connecting to ARI:', err);
@@ -75,10 +105,12 @@ export class AriService implements OnModuleInit {
     }
   }
 
-  async play(channel: any, mediaUrl: string): Promise<void> {
+  async play(channel: any, mediaParam: any): Promise<void> {
     try {
-      await channel.play({ media: mediaUrl });
-      this.logger.log(`Playing media ${mediaUrl} on channel ${channel.id}.`);
+      await channel.play(mediaParam);
+      this.logger.log(
+        `Playing media ${JSON.stringify(mediaParam)} on channel ${channel.id}.`,
+      );
     } catch (err) {
       this.logger.error(`Error playing media on channel ${channel.id}:`, err);
     }
@@ -162,18 +194,19 @@ export class AriService implements OnModuleInit {
     }
   }
 
-  async dial(callerChannel: any, target: string): Promise<void> {
+  async dial(callerChannel: any, dialParam: any): Promise<void> {
     try {
       this.logger.log(
-        `Dialing target ${target} from channel ${callerChannel.id}.`,
+        `Dialing target ${JSON.stringify(dialParam)} from channel ${callerChannel.id}.`,
       );
       const newChannel = await this.client.channels.originate({
-        endpoint: target,
+        endpoint: dialParam.target,
         app: this.appName,
-        callerId: 'NestJSARI',
+        callerId: '1111',
         timeout: 30,
       });
       newChannel.on('StasisStart', (event, channel) => {
+        console.log(event);
         this.logger.log(
           `Dialed channel ${channel.id} answered; bridging with ${callerChannel.id}.`,
         );
@@ -181,7 +214,7 @@ export class AriService implements OnModuleInit {
       });
     } catch (err) {
       this.logger.error(
-        `Error dialing target ${target} from channel ${callerChannel.id}:`,
+        `Error dialing target ${JSON.stringify(dialParam)} from channel ${callerChannel.id}:`,
         err,
       );
     }

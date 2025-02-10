@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
 import { AriService } from './ari.service';
 
 // Define the interface for a flow step.
@@ -14,7 +14,10 @@ export class CallFlowEngineService {
   private readonly logger = new Logger(CallFlowEngineService.name);
   private readonly verbMap: Record<string, Function>;
 
-  constructor(private readonly ariService: AriService) {
+  constructor(
+    @Inject(forwardRef(() => AriService))
+    private readonly ariService: AriService,
+  ) {
     // Map each verb to the corresponding method in AriService.
     this.verbMap = {
       accept: this.ariService.acceptCall.bind(this.ariService),
@@ -47,6 +50,10 @@ export class CallFlowEngineService {
    * if it fails, the onFailure branch is executed.
    */
   async executeStep(channel: any, step: FlowStep): Promise<void> {
+    if (step.verb === 'hangup') {
+      console.log('hangup called.');
+      return;
+    }
     const verbFunction = this.verbMap[step.verb];
     if (!verbFunction) {
       this.logger.error(`Unknown verb "${step.verb}" encountered.`);
