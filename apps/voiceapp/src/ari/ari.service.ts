@@ -206,10 +206,13 @@ export class AriService implements OnModuleInit {
         timeout: 30,
       });
       newChannel.on('StasisStart', (event, channel) => {
-        console.log(event);
         this.logger.log(
           `Dialed channel ${channel.id} answered; bridging with ${callerChannel.id}.`,
         );
+        this.bridgeChannels(callerChannel, channel);
+      });
+      newChannel.on('StasisEnd', (event, channel) => {
+        this.logger.log(`The channel ${channel.id} saw StasisEnd`);
         this.bridgeChannels(callerChannel, channel);
       });
     } catch (err) {
