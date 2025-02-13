@@ -127,3 +127,59 @@ module load res_ari_recordings.so
 module load res_ari_sounds.so
 
 /var/lib/asterisk/sounds # chmod 755 thanks-call-later.wav
+
+#install sipp tester on Ubuntu:
+sudo apt update
+sudo apt install -y gcc g++ make autoconf automake libtool libncurses5-dev libpcap-dev libssl-dev libpcre3-dev libnet1-dev
+sudo apt install sip-tester
+sipp -v
+
+docker pull opensips/opensips
+docker run -d --name opensips \
+ --network host \
+ -e DBENGINE=MYSQL \
+ -e DBURL="mysql://opensips:opensips@localhost/opensips" \
+ -e LOG_LEVEL=3 \
+ -v $(pwd)/opensips.cfg:/etc/opensips/opensips.cfg \
+ opensips/opensips
+
+docker run -d --name mysql -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=opensips -e MYSQL_USER=opensips -e MYSQL_PASSWORD=opensips mysql:5.7
+
+docker run -d --name opensips \
+ --network host \
+ -e DBENGINE=MYSQL \
+ -e DBURL="mysql://opensips:opensips@localhost/opensips" \
+ -e LOG_LEVEL=3 \
+ -v $(pwd)/opensips.cfg:/etc/opensips/opensips.cfg \
+ opensips/opensips
+
+docker exec -it opensips sh
+ls /usr/lib/x86_64-linux-gnu/opensips/modules/
+
+apt update
+apt install -y software-properties-common
+apt-get install -y procps
+apt install -y nano
+apt install -y bash
+apt install -y lsof
+apt install -y opensips-mysql-module
+apt install -y opensips-mi_json-module
+
+opensips-cli -h
+
+cp /etc/opensips/opensips.cfg /etc/opensips/opensips.cfg.original
+
+cp /etc/opensips/opensips.cfg.original /etc/opensips/opensips.cfg
+
+nano /etc/opensips/opensips.cfg
+
+docker build -t custom-opensips .
+
+docker run -d --name opensips \
+ -p 5060:5060/udp \
+ -p 5060:5060/tcp \
+ --network host \
+ custom-opensips
+
+docker stop opensips
+docker rm opensips
