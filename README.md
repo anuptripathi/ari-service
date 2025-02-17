@@ -57,10 +57,6 @@ docker cp asterisk:/var/lib/asterisk ./asterisk_data
 
 docker cp /sounds/ asterisk:/var/lib/asterisk/
 
-Hostname EWS2K19-JMP
-IP 122.186.47.3
-User ID gulfam
-Password Ex@t0@123
 
 [gulfam@ewscentosR9 ~]$ sudo iptables -A INPUT -p udp --dport 5060 -s 223.190.81.19 -j ACCEPT
 [gulfam@ewscentosR9 ~]$ sudo iptables -A INPUT -p udp --dport 5060 -j DROP
