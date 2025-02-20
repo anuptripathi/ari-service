@@ -37,9 +37,12 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 
-#ARI releated and asteris related settings
-ARI releated and asteris related settings
+```
 
+## ARI instructions and settings
+
+```bash
+#ARI releated and asterisk related settings
 -- For now we will have one (and only one) instace of the ari-service to per asterisk server.
 --in pjsip.conf, the aor and extension name/context should be same.
 --enable in ari.conf to true, and also enable in http.conf to allow ari to work.
@@ -80,12 +83,22 @@ module load res_ari_sounds.so
 
 /var/lib/asterisk/sounds # chmod 755 thanks-call-later.wav
 
+```
+
+## Install (Sip Tester tool) Sipp
+
+```bash
 #install sipp tester on Ubuntu:
 sudo apt update
 sudo apt install -y gcc g++ make autoconf automake libtool libncurses5-dev libpcap-dev libssl-dev libpcre3-dev libnet1-dev
 sudo apt install sip-tester
 sipp -v
 
+```
+
+## Install Dockers (opensips and others)
+
+```bash
 docker pull opensips/opensips
 docker run -d --name opensips \
  --network host \
