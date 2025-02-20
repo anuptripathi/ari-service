@@ -13,7 +13,7 @@ $ npm install
 ```bash
 # development
 $ npm run start
-
+$ npm run start voiceapp
 # watch mode
 $ npm run start:dev
 # run the voice app (microservice) in watch mode
@@ -40,6 +40,7 @@ $ npm run test:cov
 #ARI releated and asteris related settings
 ARI releated and asteris related settings
 
+-- For now we will have one (and only one) instace of the ari-service to per asterisk server.
 --in pjsip.conf, the aor and extension name/context should be same.
 --enable in ari.conf to true, and also enable in http.conf to allow ari to work.
 --modules show like ari. use this command to check if ari module is loaded or not. else load them by module load module name.
@@ -58,10 +59,10 @@ docker cp asterisk:/var/lib/asterisk ./asterisk_data
 docker cp /sounds/ asterisk:/var/lib/asterisk/
 
 
-[gulfam@ewscentosR9 ~]$ sudo iptables -A INPUT -p udp --dport 5060 -s 223.190.81.19 -j ACCEPT
-[gulfam@ewscentosR9 ~]$ sudo iptables -A INPUT -p udp --dport 5060 -j DROP
-[gulfam@ewscentosR9 ~]$ sudo ip6tables -A INPUT -p udp --dport 5060 -s 2401:4900:1c66:2a0:3525:d8f4:69f2:a0ea -j ACCEPT
-[gulfam@ewscentosR9 ~]$ sudo ip6tables -A INPUT -p udp --dport 5060 -j DROP
+$ sudo iptables -A INPUT -p udp --dport 5060 -s 223.190.81.19 -j ACCEPT
+$ sudo iptables -A INPUT -p udp --dport 5060 -j DROP
+$ sudo ip6tables -A INPUT -p udp --dport 5060 -s 2401:4900:1c66:2a0:3525:d8f4:69f2:a0ea -j ACCEPT
+$ sudo ip6tables -A INPUT -p udp --dport 5060 -j DROP
 
 module show like ari
 module load res_ari.so

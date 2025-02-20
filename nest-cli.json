@@ -1,22 +1,22 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "apps/nest-ari-monorepo/src",
+  "sourceRoot": "apps/ari-service/src",
   "compilerOptions": {
     "deleteOutDir": true,
     "webpack": true,
-    "tsConfigPath": "apps/nest-ari-monorepo/tsconfig.app.json"
+    "tsConfigPath": "apps/ari-service/tsconfig.app.json"
   },
   "monorepo": true,
-  "root": "apps/nest-ari-monorepo",
+  "root": "apps/ari-service",
   "projects": {
-    "nest-ari-monorepo": {
+    "ari-service": {
       "type": "application",
-      "root": "apps/nest-ari-monorepo",
+      "root": "apps/ari-service",
       "entryFile": "main",
-      "sourceRoot": "apps/nest-ari-monorepo/src",
+      "sourceRoot": "apps/ari-service/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/nest-ari-monorepo/tsconfig.app.json"
+        "tsConfigPath": "apps/ari-service/tsconfig.app.json"
       }
     },
     "voiceapp": {

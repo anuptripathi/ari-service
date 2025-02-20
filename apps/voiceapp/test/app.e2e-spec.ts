@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { VoiceappModule } from './../src/voiceapp.module';
+import { VoiceappModule } from '../src/voiceapp.module';
 
 describe('VoiceappController (e2e)', () => {
   let app: INestApplication;
