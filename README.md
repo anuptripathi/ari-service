@@ -158,3 +158,21 @@ docker run -d --name mysql -p 3306:3306 custom-mysql
 docker stop opensips
 docker rm opensips
 ```
+
+## Used packages for common cases:
+
+```bash
+Redis: https://www.npmjs.com/package/redis
+Kafka: https://www.npmjs.com/package/kafkajs
+HTTP: https://www.npmjs.com/package/axios
+TIME: https://www.npmjs.com/package/moment
+TIMEZONE: https://www.npmjs.com/package/moment-timezone
+IDGENERATOR: https://www.npmjs.com/package/uuid
+```
+
+## Useful commands
+
+```bash
+cd /mnt/c/Users/<windows.username>/Pictures eg cd /mnt/c/Users/anup/Downloads/
+cp /mnt/c/Users/anup/Downloads/ca.pem /code/exato/code_tele/ari-service/apps/voiceapp/
+```

@@ -27,6 +27,42 @@
       "compilerOptions": {
         "tsConfigPath": "apps/voiceapp/tsconfig.app.json"
       }
+    },
+    "autodialer": {
+      "type": "application",
+      "root": "apps/autodialer",
+      "entryFile": "main",
+      "sourceRoot": "apps/autodialer/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/autodialer/tsconfig.app.json"
+      }
+    },
+    "testcon": {
+      "type": "application",
+      "root": "apps/testcon",
+      "entryFile": "main",
+      "sourceRoot": "apps/testcon/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/testcon/tsconfig.app.json"
+      }
+    },
+    "common": {
+      "type": "library",
+      "root": "libs/common",
+      "entryFile": "index",
+      "sourceRoot": "libs/common/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/common/tsconfig.lib.json"
+      }
+    },
+    "kafka": {
+      "type": "application",
+      "root": "apps/kafka",
+      "entryFile": "main",
+      "sourceRoot": "apps/kafka/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/kafka/tsconfig.app.json"
+      }
     }
   }
 }
